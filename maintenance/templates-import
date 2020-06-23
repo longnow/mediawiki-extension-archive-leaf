@@ -1,4 +1,0 @@
-#!/bin/bash
-
-php ../../maintenance/edit.php -m Template:Entry < sources/template_entry.txt 
-php ../../maintenance/edit.php -m Template:EntryImage < sources/template_entryimage.txt 

@@ -1,4 +1,0 @@
-#!/bin/bash
-
-php ../../maintenance/getText.php Template:Entry > sources/template_entry.txt
-php ../../maintenance/getText.php Template:EntryImage > sources/template_entryimage.txt

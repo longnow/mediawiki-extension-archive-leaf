@@ -2,7 +2,6 @@
 
 maintenance/css
 
-cd transcriber
 npm run build
 
 cd build/static/js
