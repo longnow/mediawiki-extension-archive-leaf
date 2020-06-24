@@ -1,12 +1,14 @@
 {
   "name": "archiveleaf-transcriber",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.8.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "clsx": "^1.0.4",
-    "node-sass": "^4.12.0",
+    "fastify": "^2.15.0",
+    "fastify-reply-from": "^2.1.0",
+    "fastify-static": "^2.7.0",
+    "node-sass": "^4.14.1",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
     "react-dom": "^16.8.6",
