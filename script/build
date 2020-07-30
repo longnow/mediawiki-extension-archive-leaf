@@ -1,6 +1,6 @@
 #!/bin/bash
 
-maintenance/css
+script/css
 
 npm run build
 

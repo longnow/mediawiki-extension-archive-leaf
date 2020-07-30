@@ -1,25 +1,26 @@
 {
-  "name": "archiveleaf-transcriber",
+  "name": "palmleaf-transcriber",
   "version": "0.1.0",
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^5.8.2",
-    "@fortawesome/react-fontawesome": "^0.1.4",
-    "clsx": "^1.0.4",
-    "fastify": "^2.15.0",
-    "fastify-reply-from": "^2.1.0",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/react-fontawesome": "^0.1.11",
+    "clsx": "^1.1.1",
+    "fastify": "^2.15.2",
+    "fastify-oauth2": "^3.4.0",
+    "fastify-session": "^4.0.1",
     "fastify-static": "^2.7.0",
     "node-sass": "^4.14.1",
-    "react": "^16.8.6",
-    "react-app-polyfill": "^1.0.1",
-    "react-dom": "^16.8.6",
-    "react-responsive-pinch-zoom-pan": "https://github.com/kamholz/react-responsive-pinch-zoom-pan.git",
+    "react": "^16.13.1",
+    "react-app-polyfill": "^1.0.6",
+    "react-dom": "^16.13.1",
+    "react-responsive-pinch-zoom-pan": "git+https://github.com/kamholz/react-responsive-pinch-zoom-pan.git",
     "reactjs-popup": "^1.4.1"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.3",
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.5.1",
-    "eslint-plugin-react": "^7.16.0",
-    "react-scripts": "^3.3.0"
+    "eslint-plugin-react": "^7.20.5",
+    "react-scripts": "^3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
