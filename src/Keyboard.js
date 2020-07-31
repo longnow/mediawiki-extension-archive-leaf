@@ -3,8 +3,8 @@ import cx from "clsx";
 
 //import NonPrintingKeys from "./NonPrintingKeys.js";
 import styles from "./Keyboard.module.scss";
-import zwnj from "./zwnj.svg";
-import zwj from "./zwj.svg";
+import zwnj from "./zwnj";
+import zwj from "./zwj";
 import layouts from "./layouts.js";
 
 const stringInsert = (string, addition, caretPos) => {
@@ -42,7 +42,7 @@ const Key = props => {
       }}
       onPointerLeave={() => setZoom(false)}
     >
-      {props.img ? <img src={props.img} alt={props.text} /> : props.text}
+      {props.svg ? props.svg({ title: props.text }) : props.text}
     </div>
   );
 };
@@ -217,10 +217,10 @@ export default class Keyboard extends Component {
           />
         )))}
         {keySet.has("zwnj") &&
-          <Key gridArea="zwnj" img={zwnj} text="zwnj" onClick={() => this.handleKeyPress("\u200c")} />
+          <Key gridArea="zwnj" svg={zwnj} text="zwnj" onClick={() => this.handleKeyPress("\u200c")} />
         }
         {keySet.has("zwj") &&
-          <Key gridArea="zwj" img={zwj} text="zwj" onClick={() => this.handleKeyPress("\u200d")} />
+          <Key gridArea="zwj" svg={zwj} text="zwj" onClick={() => this.handleKeyPress("\u200d")} />
         }
         {keySet.has("shift") &&
           <Key gridArea="shift" text={shiftLevel ? "⬆" : "⇧"} onClick={() => this.setState({ shiftLevel: shiftLevel === 0 ? 1 : 0 })} unzoomable flash />

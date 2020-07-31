@@ -29,7 +29,7 @@ $keyboardFontSize: vh(3.9);
   user-select: none;
 }
 
-.key img {
+.key svg {
   block-size: $keyboardFontSize;
   margin: 8px;
 }
