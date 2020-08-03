@@ -68,7 +68,7 @@ function mobileFrontendHooks() {
 }
 
 function switchProofreadPageToHorizontal() {
-  if (!mw.user.options.get("proofreadpage-horizontal-layout")) {
+  if (!window.mw.user.options.get("proofreadpage-horizontal-layout")) {
     const switchLayout = document.querySelector(".oo-ui-icon-switchLayout");
     if (switchLayout) {
       switchLayout.click();
