@@ -132,7 +132,7 @@ export default class App extends Component {
       this.state = {
         ...this.state,
         open: false,
-        imageUrl: currentLeaf.url,
+        //imageUrl: currentLeaf.url,
         iiifDimensions: this.getIiifDimensions(this.state.archiveItem.leaf),
         keyboardOpen: false,
         emulateTextEdit: false,
@@ -415,7 +415,7 @@ export default class App extends Component {
 
   setLeaf(leaf) {
     this.setState({
-      imageUrl: currentLeaf.url,
+      //imageUrl: currentLeaf.url,
       imageLoading: true,
       iiifDimensions: this.getIiifDimensions(leaf),
       transliterationOpen: false,
