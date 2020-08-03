@@ -4,98 +4,23 @@
 
 @font-face {
     font-family: "Kadiri";
-    src: url(#{$kadiri}.woff2?v#{$kadiri_ver}) format('woff2'),
-         url(#{$kadiri}.woff?v#{$kadiri_ver}) format('woff'),
-         url(#{$kadiri}.ttf?v#{$kadiri_ver}) format('truetype');
-    unicode-range: U+1B00-1B7F;
-}
-
-@font-face {
-    font-family: "Natya";
-    src: url(#{$natya}.woff2?v#{$natya_ver}) format('woff2'),
-         url(#{$natya}.woff?v#{$natya_ver}) format('woff'),
-         url(#{$natya}.ttf?v#{$natya_ver}) format('truetype');
+    src: url(#{$kadiri_woff2}) format('woff2'),
+         url(#{$kadiri_woff}) format('woff');
     unicode-range: U+1B00-1B7F;
 }
 
 @font-face {
     font-family: "Pustaka Bali";
-    src: url(#{$pustaka_bali}.woff2?v#{$pustaka_bali_ver}) format('woff2'),
-         url(#{$pustaka_bali}.woff?v#{$pustaka_bali_ver}) format('woff'),
-         url(#{$pustaka_bali}.ttf?v#{$pustaka_bali_ver}) format('truetype');
+    src: url(#{$pustaka_bali_woff2}) format('woff2'),
+         url(#{$pustaka_bali_woff}) format('woff');
     unicode-range: U+1B00-1B7F;
 }
 
 @font-face {
     font-family: "Vimala";
-    src: url(#{$vimala}.woff2?v#{$vimala_ver}) format('woff2'),
-         url(#{$vimala}.woff?v#{$vimala_ver}) format('woff'),
-         url(#{$vimala}.ttf?v#{$vimala_ver}) format('truetype');
+    src: url(#{$vimala_woff2}) format('woff2'),
+         url(#{$vimala_woff}) format('woff');
     unicode-range: U+1B00-1B7F;
-}
-
-@font-face {
-    font-family: "Noto Serif Balinese";
-    src: url(#{$noto_balinese}.woff2) format('woff2'),
-         url(#{$noto_balinese}.woff) format('woff'),
-         url(#{$noto_balinese}.ttf) format('truetype');
-    unicode-range: U+1B00-1B7F;
-}
-
-@font-face {
-    font-family: "Noto Sans Grantha";
-    src: url(#{$noto_grantha}.woff2) format('woff2'),
-         url(#{$noto_grantha}.woff) format('woff'),
-         url(#{$noto_grantha}.ttf) format('truetype');
-    unicode-range: U+11300-1137F;
-}
-
-@font-face {
-    font-family: "Noto Sans Khmer";
-    src: url(#{$noto_khmer}.woff2) format('woff2'),
-         url(#{$noto_khmer}.woff) format('woff'),
-         url(#{$noto_khmer}.ttf) format('truetype');
-    unicode-range: U+1780-17FF;
-}
-
-@font-face {
-    font-family: "Noto Sans Malayalam";
-    src: url(#{$noto_malayalam}.woff2) format('woff2'),
-         url(#{$noto_malayalam}.woff) format('woff'),
-         url(#{$noto_malayalam}.ttf) format('truetype');
-    unicode-range: U+0D00-0D7F;
-}
-
-@font-face {
-    font-family: "Noto Sans Myanmar";
-    src: url(#{$noto_myanmar}.woff2) format('woff2'),
-         url(#{$noto_myanmar}.woff) format('woff'),
-         url(#{$noto_myanmar}.ttf) format('truetype');
-    unicode-range: U+1000-109F;
-}
-
-@font-face {
-    font-family: "Noto Sans Sinhala";
-    src: url(#{$noto_sinhala}.woff2) format('woff2'),
-         url(#{$noto_sinhala}.woff) format('woff'),
-         url(#{$noto_sinhala}.ttf) format('truetype');
-    unicode-range: U+0D80-0DFF;
-}
-
-@font-face {
-    font-family: "Noto Sans Tamil";
-    src: url(#{$noto_tamil}.woff2) format('woff2'),
-         url(#{$noto_tamil}.woff) format('woff'),
-         url(#{$noto_tamil}.ttf) format('truetype');
-    unicode-range: U+0B80-0BFF;
-}
-
-@font-face {
-    font-family: "Noto Sans Telugu";
-    src: url(#{$noto_telugu}.woff2) format('woff2'),
-         url(#{$noto_telugu}.woff) format('woff'),
-         url(#{$noto_telugu}.ttf) format('truetype');
-    unicode-range: U+0C00-0C7F;
 }
 
 body {
