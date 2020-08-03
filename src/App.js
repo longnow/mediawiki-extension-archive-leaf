@@ -121,7 +121,7 @@ export default class App extends Component {
 
       this.state = {
         ...this.state,
-        open: this.checkTags(),
+        open: true,
         imageUrl: props.imageUrl,
         iiifDimensions: props.iiifDimensions,
         keyboardAvailable: !!layouts[script],
@@ -129,13 +129,11 @@ export default class App extends Component {
       this.state.keyboardOpen = this.state.keyboardAvailable && !(window.localStorage.getItem(`keyboardOpen-${script}`) === "false");
       this.state.emulateTextEdit = platform.mobile && this.state.keyboardOpen;
     } else {
-      const currentLeaf = props.imageData[this.state.archiveItem.leaf];
-
       this.state = {
         ...this.state,
         open: false,
         imageUrl: currentLeaf.url,
-        iiifDimensions: { width: currentLeaf.w, height: currentLeaf.h },
+        iiifDimensions: this.getIiifDimensions(this.state.archiveItem.leaf),
         keyboardOpen: false,
         emulateTextEdit: false,
       };
@@ -162,24 +160,8 @@ export default class App extends Component {
     }
   }
 
-  checkTags() {
-    let shouldOpen = true;
-    const openTags = this.textbox.value.match(/<transcription>/g);
-    const closeTags = this.textbox.value.match(/<\/transcription>/g);
-    if ((openTags || closeTags) &&
-      (!(openTags && openTags.length === 1 && closeTags && closeTags.length === 1) ||
-      !(this.textbox.value.indexOf("<transcription>") < this.textbox.value.indexOf("</transcription>")))
-    ) {
-      shouldOpen = false;
-      alert("Transcription tags are malformed!");
-    }
-    return shouldOpen;
-  }
-
   handleOpen = () => {
-    if (!this.editMode || this.checkTags()) {
-      this.setState({ open: true, ...this.finalizeOpen() });
-    }
+    this.setState({ open: true, ...this.finalizeOpen() });
   }
 
   finalizeOpen() {
@@ -202,22 +184,16 @@ export default class App extends Component {
       archiveItem = this.state.archiveItem;
     }
 
-    newState.archiveItemKey = archiveItem.id + "$" + archiveItem.leaf;
+    newState.archiveItemKey = [archiveItem.id, archiveItem.file, archiveItem.leaf].join("$");
     if (this.props.iiifBaseUrl) {
-      newState.iiifUrl = `${this.props.iiifBaseUrl}/${archiveItem.id}%24${archiveItem.leaf}`;
+      newState.iiifUrl = `${this.props.iiifBaseUrl}/${archiveItem.id}:${archiveItem.file}%24${archiveItem.leaf}`;
     }
 
     if (this.editMode) {
-      const matches = this.textbox.value.match(/(?:.*<transcription>)(.*?)(?:<\/transcription>.*)/s);
-      if (matches) {
-        const text = matches[1].trim();
-        setTimeout(() => this.checkStoredText(text), 1000);
-        newState.text = text;
-        newState.caretPos = text.length;
-      } else {
-        newState.text = "";
-        newState.caretPos = 0;
-      }
+      const text = this.textbox.value.trim();
+      setTimeout(() => this.checkStoredText(text), 1000);
+      newState.text = text;
+      newState.caretPos = text.length;
     } else {
       let elt = document.getElementById(archiveItem.leaf === 0 ? "Front_and_Back_Covers" : `Leaf_${archiveItem.leaf}`);
       if (elt) {
@@ -276,17 +252,11 @@ export default class App extends Component {
 
   saveTranscription() {
     let changed = true;
-    const transcription = this.state.text.trim();
-    const matches = this.textbox.value.match(/(.*<transcription>).*(<\/transcription>.*)/s);
-    if (matches) {
-      const newValue = [matches[1], transcription, matches[2]].join("\n");
-      if (newValue === this.textbox.value) {
-        changed = false;
-      } else {
-        this.textbox.value = newValue;
-      }
+    const newValue = this.state.text.trim();
+    if (newValue === this.textbox.value) {
+      changed = false;
     } else {
-      this.textbox.value += "\n<transcription>\n" + transcription + "\n</transcription>";
+      this.textbox.value = newValue;
     }
 
     if (changed && this.props.mobileFrontend) {
@@ -311,7 +281,7 @@ export default class App extends Component {
           this.setLeaf(this.state.archiveItem.leaf - 1);
         }
       } else if (e.key === "ArrowRight") {
-        if (this.state.archiveItem.leaf < this.props.imageData.length-1) {
+        if (this.state.archiveItem.leaf < this.props.iiifImageData.length-1) {
           this.setLeaf(this.state.archiveItem.leaf + 1);
         }
       }
@@ -438,15 +408,18 @@ export default class App extends Component {
     }
   }
 
-  setLeaf(leaf) {
-    const currentLeaf = this.props.imageData[leaf];
+  getIiifDimensions(leaf) {
+    const imageData = this.props.iiifImageData;
+    return imageData.all || imageData.pages[leaf];
+  }
 
+  setLeaf(leaf) {
     this.setState({
       imageUrl: currentLeaf.url,
       imageLoading: true,
-      iiifDimensions: { width: currentLeaf.w, height: currentLeaf.h },
+      iiifDimensions: this.getIiifDimensions(leaf),
       transliterationOpen: false,
-      ...this.finalizeState({ id: this.state.archiveItem.id, leaf }),
+      ...this.finalizeState({ ...this.state.archiveItem, leaf }),
     });
   }
 
@@ -467,7 +440,7 @@ export default class App extends Component {
             <PinchZoomPan
               imageUrl={imageUrl}
               iiifUrl={iiifUrl}
-              iiifDimensions={iiifDimensions}
+              iiifDimensions={{width: iiifDimensions[0], height: iiifDimensions[1]}}
               maxScale={5}
               enhanceScale={1.5}
               doubleTapBehavior="zoom"
@@ -510,7 +483,7 @@ export default class App extends Component {
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </button>
               }
-              {leaf < this.props.imageData.length-1 &&
+              {leaf < this.props.iiifImageData.length-1 &&
                 <button
                   className={cx(styles.button,styles.next)}
                   onClick={() => this.setLeaf(leaf + 1)}

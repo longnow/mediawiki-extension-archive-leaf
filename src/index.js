@@ -9,8 +9,12 @@ const mobileFrontend = !!(window.mw && window.mw.config.get("wgMFMode"));
 const transcriber = document.createElement("div");
 document.body.appendChild(transcriber);
 ReactDOM.render(<App {...window.transcriberData} mobileFrontend={mobileFrontend} />, transcriber);
+/*if (mobileFrontend) {
+  mobileFrontendHooks();
+}*/
+switchProofreadPageToHorizontal();
 
-if (mobileFrontend) {
+function mobileFrontendHooks() {
   let transcriberEdit, observer;
 
   window.mw.hook("mobileFrontend.editorOpened").add(() => {
@@ -61,6 +65,15 @@ if (mobileFrontend) {
     }
     transcriber.classList.remove(styles.closed);
   });
+}
+
+function switchProofreadPageToHorizontal() {
+  if (!mw.user.options.get("proofreadpage-horizontal-layout")) {
+    const switchLayout = document.querySelector(".oo-ui-icon-switchLayout");
+    if (switchLayout) {
+      switchLayout.click();
+    }
+  }
 }
 
 // If you want your app to work offline and load faster, you can change
