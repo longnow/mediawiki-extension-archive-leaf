@@ -1,7 +1,5 @@
 #!/bin/bash
 
-script/css
-
 npm run build
 
 cd build/static/js

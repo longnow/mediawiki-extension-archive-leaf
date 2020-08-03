@@ -1,4 +1,0 @@
-#!/bin/bash
-
-touch scss/fonts-custom.scss
-./node_modules/.bin/node-sass --output-style compressed scss/styles.scss > public/styles.css
