@@ -117,7 +117,6 @@ export default class App extends Component {
     if (this.editMode) {
       this.caretRef = React.createRef();
       this.textAreaRef = React.createRef();
-      this.textbox = document.getElementById(props.mobileFrontend ? "wikitext-editor" : "wpTextbox1");
 
       this.state = {
         ...this.state,
@@ -190,7 +189,7 @@ export default class App extends Component {
     }
 
     if (this.editMode) {
-      const text = this.textbox.value.trim();
+      const text = this.props.textbox.value.trim();
       setTimeout(() => this.checkStoredText(text), 1000);
       newState.text = text;
       newState.caretPos = text.length;
@@ -253,10 +252,10 @@ export default class App extends Component {
   saveTranscription() {
     let changed = true;
     const newValue = this.state.text.trim();
-    if (newValue === this.textbox.value) {
+    if (newValue === this.props.textbox.value) {
       changed = false;
     } else {
-      this.textbox.value = newValue;
+      this.props.textbox.value = newValue;
     }
 
     if (changed && this.props.mobileFrontend) {
