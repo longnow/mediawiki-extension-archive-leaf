@@ -194,6 +194,7 @@ export default class App extends Component {
       newState.text = text;
       newState.caretPos = text.length;
     } else {
+      /*
       let elt = document.getElementById(archiveItem.leaf === 0 ? "Front_and_Back_Covers" : `Leaf_${archiveItem.leaf}`);
       if (elt) {
         if (this.props.mobileFrontend) {
@@ -217,6 +218,7 @@ export default class App extends Component {
           }
         }
       }
+      */
     }
 
     return newState;
@@ -256,11 +258,6 @@ export default class App extends Component {
       changed = false;
     } else {
       this.props.textbox.value = newValue;
-    }
-
-    if (changed && this.props.mobileFrontend) {
-      document.querySelectorAll(".header-action .continue, .header-action .submit")
-        .forEach(elt => elt.disabled = false);
     }
 
     if (this.state.archiveItemKey) {
