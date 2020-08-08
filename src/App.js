@@ -397,6 +397,7 @@ export default class App extends Component {
         page: this.props.wikipages[leaf],
         prop: "wikitext",
         contentformat: "application/json",
+        format: "json",
         formatversion: 2
       }).toString();
       const res = await window.fetch(this.getMediawikiApi() + '?' + params);
