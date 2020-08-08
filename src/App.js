@@ -402,10 +402,9 @@ export default class App extends Component {
       }).toString();
       const res = await window.fetch(this.getMediawikiApi() + '?' + params);
       const resJson = await res.json();
-      if (resJson.parse) {
-        const content = JSON.parse(resJson.parse.wikitext);
-        this.leafContents[leaf] = content.body;
-      }
+      this.leafContents[leaf] = resJson.parse
+        ? JSON.parse(resJson.parse.wikitext).body
+        : "";
     }
     return this.leafContents[leaf];
   }
