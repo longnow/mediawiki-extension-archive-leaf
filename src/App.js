@@ -8,7 +8,6 @@ import { faBookOpen, faChevronLeft, faChevronRight, faEllipsisV, faKeyboard, faS
 import styles from "./App.module.scss";
 import Keyboard from "./Keyboard";
 import layouts from "./layouts.js";
-import transliterators from "./transliterator.json";
 
 const scriptFont = {
   "bali": {
@@ -101,7 +100,6 @@ export default class App extends Component {
       transliterationOpen: false,
       imageLoading: false,
     };
-    this.state.transliteratorAvailable = !!transliterators[script];
 
     const savedFont = window.localStorage.getItem(`font-${script}`);
     if (scriptFont[script] && scriptFont[script].fonts.some(([name]) => name === savedFont)) {
@@ -357,17 +355,28 @@ export default class App extends Component {
 
   getTransliteration() {
     return new Promise((resolve, reject) => {
-      window.fetch(this.getMediawikiApi(), {
-        method: "POST",
-        body: new URLSearchParams({
-          action: "transliterate",
-          format: "json",
-          origin: "*",
-          transliterator: transliterators[this.props.script],
-          text: this.state.text
-        })
-      }).then(res => {
-        res.json().then(json => (json.error ? reject : resolve(json.transliteration)), reject);
+      const escapedText = this.state.text.replace(/([\\|])/g, "\\$1");
+      const params = new URLSearchParams({
+        action: "parse",
+        prop: "text",
+        text: `{{#transliterate:${this.state.language}|${escapedText}}}`,
+        contentmodel: "wikitext",
+        format: "json",
+        formatversion: 2
+      }).toString();
+      window.fetch(this.getMediawikiApi() + '?' + params)
+      .then(res => {
+        res.json().then(json => {
+          if (!json.error) {
+            const div = document.createElement("div");
+            div.innerHTML = json.parse.text;
+            const output = div.querySelector(".mw-parser-output p");
+            if (output) {
+              return resolve(output.innerHTML.trim());
+            }
+          }
+          reject();
+        });
       }, reject);
     });
   }
@@ -425,7 +434,7 @@ export default class App extends Component {
     const { script } = this.props;
     const {
       open, text, caretPos, emulateTextEdit, font,
-      keyboardAvailable, keyboardOpen, transliteratorAvailable, transliterationOpen,
+      keyboardAvailable, keyboardOpen, transliterationOpen,
       imageUrl, iiifUrl, iiifDimensions, imageLoading,
     } = this.state;
     const { archiveItem: { leaf } } = this.state;
@@ -524,51 +533,47 @@ export default class App extends Component {
               <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
               <FontAwesomeIcon icon={faTimes} />
             </button>
-            {(transliteratorAvailable || (editMode && keyboardAvailable) || (scriptFont[script] && scriptFont[script].fonts)) &&
-              <Popup
-                on="click"
-                contentStyle={{width: "14em"}}
-                trigger={<button className={styles.button}><FontAwesomeIcon icon={faEllipsisV} /></button>}
-                position="bottom right"
-              >
-                {close => (
-                  <>
-                    {transliteratorAvailable &&
-                      <MenuItem close={close}
-                        label="Show Transliteration"
-                        onClick={() => this.setTransliterationOpen(true)}
-                      />
-                    }
-                    {editMode && keyboardAvailable &&
-                      <MenuItem close={close}
-                        label={(keyboardOpen ? "Hide" : "Show") + " Onscreen Keyboard"}
-                        onClick={this.toggleKeyboard}
-                      />
-                    }
-                    {scriptFont[script] && scriptFont[script].fonts &&
-                      <>
-                        <MenuItem close={close} label="Set Font:" className={styles.disabled} />
-                        {scriptFont[script].fonts.map(([name,displayName]) =>
-                          name === font ?
-                            <MenuItem close={close}
-                              key={name}
-                              label={displayName}
-                              spanClassName={cx(styles.indented,styles.checked)}
-                            />
-                          :
-                            <MenuItem close={close}
-                              key={name}
-                              label={displayName}
-                              spanClassName={styles.indented}
-                              onClick={() => this.setFont(name)}
-                            />
-                        )}
-                      </>
-                    }
-                  </>
-                )}
-              </Popup>
-            }
+            <Popup
+              on="click"
+              contentStyle={{width: "14em"}}
+              trigger={<button className={styles.button}><FontAwesomeIcon icon={faEllipsisV} /></button>}
+              position="bottom right"
+            >
+              {close => (
+                <>
+                  <MenuItem close={close}
+                    label="Show Transliteration"
+                    onClick={() => this.setTransliterationOpen(true)}
+                  />
+                  {editMode && keyboardAvailable &&
+                    <MenuItem close={close}
+                      label={(keyboardOpen ? "Hide" : "Show") + " Onscreen Keyboard"}
+                      onClick={this.toggleKeyboard}
+                    />
+                  }
+                  {scriptFont[script] && scriptFont[script].fonts &&
+                    <>
+                      <MenuItem close={close} label="Set Font:" className={styles.disabled} />
+                      {scriptFont[script].fonts.map(([name,displayName]) =>
+                        name === font ?
+                          <MenuItem close={close}
+                            key={name}
+                            label={displayName}
+                            spanClassName={cx(styles.indented,styles.checked)}
+                          />
+                        :
+                          <MenuItem close={close}
+                            key={name}
+                            label={displayName}
+                            spanClassName={styles.indented}
+                            onClick={() => this.setFont(name)}
+                          />
+                      )}
+                    </>
+                  }
+                </>
+              )}
+            </Popup>
           </div>
         :
           <button
