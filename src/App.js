@@ -254,7 +254,7 @@ export default class App extends Component {
           this.setLeaf(this.state.archiveItem.leaf - 1);
         }
       } else if (e.key === "ArrowRight") {
-        if (this.state.archiveItem.leaf < this.props.iiifImageData.length-1) {
+        if (this.state.archiveItem.leaf < this.props.wikipages.length-1) {
           this.setLeaf(this.state.archiveItem.leaf + 1);
         }
       }
@@ -478,7 +478,7 @@ export default class App extends Component {
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </button>
               }
-              {leaf < this.props.iiifImageData.length-1 &&
+              {leaf < this.props.wikipages.length-1 &&
                 <button
                   className={cx(styles.button,styles.next)}
                   onClick={() => this.setLeaf(leaf + 1)}
