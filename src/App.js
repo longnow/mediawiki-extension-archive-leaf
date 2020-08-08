@@ -393,18 +393,17 @@ export default class App extends Component {
   async getLeafContents(leaf) {
     if (!this.leafContents[leaf]) {
       const params = new URLSearchParams({
-        action: "query",
-        prop: "revisions",
-        titles: this.props.wikipages[leaf],
-        rvprop: "content",
-        rvslots: "*",
-        format: "json",
+        action: "parse",
+        page: this.props.wikipages[leaf],
+        prop: "wikitext",
+        contentformat: "application/json",
         formatversion: 2
       }).toString();
       const res = await window.fetch(this.getMediawikiApi() + '?' + params);
-      const json = await res.json();
-      if (json.query.pages[0]) {
-        this.leafContents[leaf] = json.query.pages[0].revisions[0].slots.main.content;
+      const resJson = await res.json();
+      if (resJson.parse) {
+        const content = JSON.parse(resJson.parse.wikitext);
+        this.leafContents[leaf] = content.body;
       }
     }
     return this.leafContents[leaf];
