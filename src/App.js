@@ -382,23 +382,25 @@ export default class App extends Component {
   }
 
   getLeafImageUrl(leaf) {
-    const url = new URL("https://commons.wikimedia.org/w/thumb.php");
-    url.searchParams.set("f", this.props.commonsFile);
-    url.searchParams.set("p", leaf + 1);
-    url.searchParams.set("w", 1024);
-    return url.toString();
+    const params = new URLSearchParams({
+      f: this.props.commonsFile,
+      p: leaf + 1,
+      w: 1024,
+    }).toString();
+    return `https://commons.wikimedia.org/w/thumb.php?${params}`;
   }
 
   async getLeafContents(leaf) {
     if (!this.leafContents[leaf]) {
-      const url = new URL(this.getMediawikiApi());
-      url.searchParams.set("action", "query");
-      url.searchParams.set("prop", "revisions");
-      url.searchParams.set("titles", this.wikipages[leaf]);
-      url.searchParams.set("rvprop", "content");
-      url.searchParams.set("rvslots", "*");
-      url.searchParams.set("formatversion", "2");
-      const res = await window.fetch(url);
+      const params = new URLSearchParams({
+        action: "query",
+        prop: "revisions",
+        titles: this.wikipages[leaf],
+        rvprop: "content",
+        rvslots: "*",
+        formatversion: 2
+      }).toString();
+      const res = await window.fetch(this.getMediawikiApi() + '?' + params);
       const json = await res.json();
       if (json.query.pages[0]) {
         this.leafContents[leaf] = json.query.pages[0].revisions[0].slots.main.content;
