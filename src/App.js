@@ -391,7 +391,7 @@ export default class App extends Component {
   }
 
   async getLeafContents(leaf) {
-    if (!this.leafContents[leaf]) {
+    if (this.leafContents[leaf] === undefined) {
       const params = new URLSearchParams({
         action: "parse",
         page: this.props.wikipages[leaf],
