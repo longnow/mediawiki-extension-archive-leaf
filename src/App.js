@@ -395,7 +395,7 @@ export default class App extends Component {
       const params = new URLSearchParams({
         action: "query",
         prop: "revisions",
-        titles: this.wikipages[leaf],
+        titles: this.props.wikipages[leaf],
         rvprop: "content",
         rvslots: "*",
         formatversion: 2
