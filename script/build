@@ -1,0 +1,9 @@
+#!/bin/bash
+
+npm run build
+
+cd build/static/js
+cat <(echo "/*@nomin*/") runtime*.js <(echo) [0-9]*.js <(echo) main*.js > transcriber.js
+
+cd ../css
+cat [0-9]*.css main*.css > transcriber.css
