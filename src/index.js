@@ -2,7 +2,6 @@ import "react-app-polyfill/stable";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import styles from "./App.module.scss";
 import * as serviceWorker from "./serviceWorker";
 
 const transcriber = document.createElement("div");

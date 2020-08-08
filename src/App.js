@@ -128,10 +128,12 @@ export default class App extends Component {
       this.state.keyboardOpen = this.state.keyboardAvailable && !(window.localStorage.getItem(`keyboardOpen-${script}`) === "false");
       this.state.emulateTextEdit = platform.mobile && this.state.keyboardOpen;
     } else {
+      this.leafContents = [];
       this.state = {
         ...this.state,
+        imageUrl: this.getLeafImageUrl(this.state.archiveItem.leaf),
+        text: null,
         open: false,
-        //imageUrl: currentLeaf.url,
         iiifDimensions: this.getIiifDimensions(this.state.archiveItem.leaf),
         keyboardOpen: false,
         emulateTextEdit: false,
@@ -159,8 +161,12 @@ export default class App extends Component {
     }
   }
 
-  handleOpen = () => {
-    this.setState({ open: true, ...this.finalizeOpen() });
+  handleOpen = async () => {
+    const newState = { open: true, ...this.finalizeOpen() };
+    if (this.state.text === null) {
+      newState.text = await this.getLeafContents(this.state.archiveItem.leaf);
+    }
+    this.setState(newState);
   }
 
   finalizeOpen() {
@@ -193,32 +199,6 @@ export default class App extends Component {
       setTimeout(() => this.checkStoredText(text), 1000);
       newState.text = text;
       newState.caretPos = text.length;
-    } else {
-      /*
-      let elt = document.getElementById(archiveItem.leaf === 0 ? "Front_and_Back_Covers" : `Leaf_${archiveItem.leaf}`);
-      if (elt) {
-        if (this.props.mobileFrontend) {
-          elt = document.getElementById(elt.parentElement.getAttribute("aria-controls"));
-          if (elt) {
-            elt = elt.querySelector(".transcription");
-            if (elt) {
-              newState.text = elt.innerText;
-              newState.transcriptionElt = elt;
-            }
-          }
-        } else {
-          elt = elt.parentElement;
-
-          while ((elt = elt.nextElementSibling)) {
-            if (elt.className === "transcription") {
-              newState.text = elt.innerText;
-              newState.transcriptionElt = elt;
-              break;
-            }
-          }
-        }
-      }
-      */
     }
 
     return newState;
@@ -252,11 +232,8 @@ export default class App extends Component {
   }
 
   saveTranscription() {
-    let changed = true;
     const newValue = this.state.text.trim();
-    if (newValue === this.props.textbox.value) {
-      changed = false;
-    } else {
+    if (newValue !== this.props.textbox.value) {
       this.props.textbox.value = newValue;
     }
 
@@ -379,29 +356,20 @@ export default class App extends Component {
   }
 
   getTransliteration() {
-    if (this.editMode) {
-      return new Promise((resolve, reject) => {
-        window.fetch(this.props.mediawikiApi || "/w/api.php", {
-          method: "POST",
-          body: new URLSearchParams({
-            action: "transliterate",
-            format: "json",
-            origin: "*",
-            transliterator: transliterators[this.props.script],
-            text: this.state.text
-          })
-        }).then(res => {
-          res.json().then(json => (json.error ? reject : resolve(json.transliteration)), reject);
-        }, reject);
-      });
-    } else {
-      const elt = this.state.transcriptionElt.nextElementSibling;
-      if (elt.className === "transliteration") {
-        return new Promise((resolve) => resolve(elt.innerText));
-      } else {
-        return new Promise((resolve, reject) => reject());
-      }
-    }
+    return new Promise((resolve, reject) => {
+      window.fetch(this.getMediawikiApi(), {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "transliterate",
+          format: "json",
+          origin: "*",
+          transliterator: transliterators[this.props.script],
+          text: this.state.text
+        })
+      }).then(res => {
+        res.json().then(json => (json.error ? reject : resolve(json.transliteration)), reject);
+      }, reject);
+    });
   }
 
   getIiifDimensions(leaf) {
@@ -409,9 +377,40 @@ export default class App extends Component {
     return imageData.all || imageData.pages[leaf];
   }
 
-  setLeaf(leaf) {
+  getMediawikiApi() {
+    return this.props.mediawikiApi || "/w/api.php";
+  }
+
+  getLeafImageUrl(leaf) {
+    const url = new URL("https://commons.wikimedia.org/w/thumb.php");
+    url.searchParams.set("f", this.props.commonsFile);
+    url.searchParams.set("p", leaf + 1);
+    url.searchParams.set("w", 1024);
+    return url.toString();
+  }
+
+  async getLeafContents(leaf) {
+    if (!this.leafContents[leaf]) {
+      const url = new URL(this.getMediawikiApi());
+      url.searchParams.set("action", "query");
+      url.searchParams.set("prop", "revisions");
+      url.searchParams.set("titles", this.wikipages[leaf]);
+      url.searchParams.set("rvprop", "content");
+      url.searchParams.set("rvslots", "*");
+      url.searchParams.set("formatversion", "2");
+      const res = await window.fetch(url);
+      const json = await res.json();
+      if (json.query.pages[0]) {
+        this.leafContents[leaf] = json.query.pages[0].revisions[0].slots.main.content;
+      }
+    }
+    return this.leafContents[leaf];
+  }
+
+  async setLeaf(leaf) {
     this.setState({
-      //imageUrl: currentLeaf.url,
+      text: await this.getLeafContents(leaf),
+      imageUrl: this.getLeafImageUrl(leaf),
       imageLoading: true,
       iiifDimensions: this.getIiifDimensions(leaf),
       transliterationOpen: false,
