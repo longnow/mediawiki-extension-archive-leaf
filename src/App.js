@@ -355,11 +355,10 @@ export default class App extends Component {
 
   getTransliteration() {
     return new Promise((resolve, reject) => {
-      const escapedText = this.state.text.replace(/([\\|])/g, "\\$1");
       const params = new URLSearchParams({
         action: "parse",
         prop: "text",
-        text: `{{#transliterate:${this.state.language}|${escapedText}}}`,
+        text: `{{#transliterate:${this.state.language}|${this.state.text}}}`,
         contentmodel: "wikitext",
         format: "json",
         formatversion: 2
