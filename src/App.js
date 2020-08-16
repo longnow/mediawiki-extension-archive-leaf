@@ -193,7 +193,7 @@ export default class App extends Component {
     }
 
     if (this.editMode) {
-      const text = this.props.textbox.value.trim();
+      const text = this.props.textbox.value.replace(/ *<br(?: *\/ *)?> *\n*/g, '\n').trim();
       setTimeout(() => this.checkStoredText(text), 1000);
       newState.text = text;
       newState.caretPos = text.length;
@@ -230,7 +230,11 @@ export default class App extends Component {
   }
 
   saveTranscription() {
-    const newValue = this.state.text.trim();
+    let newValue = this.state.text.trim();
+    if (newValue.length) {
+      newValue += '\n';
+    }
+    newValue = newValue.replace(/ *\n/g, ' <br>\n');
     if (newValue !== this.props.textbox.value) {
       this.props.textbox.value = newValue;
     }
@@ -360,6 +364,7 @@ export default class App extends Component {
         prop: "text",
         text: `{{#transliterate:${this.state.language}|${this.state.text}}}`,
         contentmodel: "wikitext",
+        disablelimitreport: 1,
         format: "json",
         formatversion: 2
       }).toString();
