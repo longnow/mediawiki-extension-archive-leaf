@@ -21,88 +21,44 @@
     -->
     <style>
       @font-face {
-        font-family: "Noto Serif Balinese";
-        src: url("https://archive.org/cors/NotoFonts/NotoSerifBalinese-Regular.woff2") format("woff2"),
-             url("https://archive.org/cors/NotoFonts/NotoSerifBalinese-Regular.woff") format("woff"),
-             url("https://archive.org/cors/NotoFonts/NotoSerifBalinese-Regular.ttf") format("truetype");
-        unicode-range: U+1B00-1B7F;
+          font-family: "Kadiri";
+          src: url(https://wikisource.org/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Kadiri/Kadiri.woff2?0cfa1) format('woff2'),
+               url(https://wikisource.org/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Kadiri/Kadiri.woff?98297) format('woff');
+          unicode-range: U+1B00-1B7F;
       }
 
       @font-face {
-        font-family: "Vimala Rwa";
-        src: url(https://bali.panlex.org/transcriber/fonts/VimalaRwa.woff2?v22) format('woff2'),
-             url(https://bali.panlex.org/transcriber/fonts/VimalaRwa.woff?v22) format('woff'),
-             url(https://bali.panlex.org/transcriber/fonts/VimalaRwa.ttf?v22) format('truetype');
-        unicode-range: U+1B00-1B7F;
+          font-family: "Pustaka Bali";
+          src: url(https://wikisource.org/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/PustakaBali/PustakaBali.woff2?6b142) format('woff2'),
+               url(https://wikisource.org/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/PustakaBali/PustakaBali.woff?7c072) format('woff');
+          unicode-range: U+1B00-1B7F;
       }
 
       @font-face {
-        font-family: "Vimala Eka";
-        src: url(https://bali.panlex.org/transcriber/fonts/VimalaEka.woff2?v22) format('woff2'),
-             url(https://bali.panlex.org/transcriber/fonts/VimalaEka.woff?v22) format('woff'),
-             url(https://bali.panlex.org/transcriber/fonts/VimalaEka.ttf?v22) format('truetype');
-        unicode-range: U+1B00-1B7F;
-      }
-
-      @font-face {
-        font-family: "Pustaka Bali";
-        src: url(https://bali.panlex.org/transcriber/fonts/PustakaBali.woff2?v22) format('woff2'),
-             url(https://bali.panlex.org/transcriber/fonts/PustakaBali.woff?v22) format('woff'),
-             url(https://bali.panlex.org/transcriber/fonts/PustakaBali.ttf?v22) format('truetype');
-        unicode-range: U+1B00-1B7F;
+          font-family: "Vimala";
+          src: url(https://wikisource.org/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Vimala/Vimala.woff2?a3b10) format('woff2'),
+               url(https://wikisource.org/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Vimala/Vimala.woff?f75ba) format('woff');
+          unicode-range: U+1B00-1B7F;
       }
 
       body {
         margin: 0;
         padding: 0;
-        font-family: "Vimala Rwa", "Noto Serif Balinese", sans-serif;
+        font-family: "Vimala", "Noto Serif Balinese", sans-serif;
       }
 
       textarea {
         max-width: 100%;
       }
     </style>
-    <script>
-      if (1) {
-        var transcriberData = {
-          "mode": "edit",
-          "archiveItem": { "id": "tutur-smara-bhuwana", "leaf": 2 },
-          "iiifDimensions": { "width": 5616, "height": 3744 },
-          "iiifBaseUrl": "https://iiif.archivelab.org/iiif",
-          "imageUrl": "https://palmleaf.org/w/images/a/a7/tutur-smara-bhuwana_2.jpeg",
-          "script": "bali",
-          "mediawikiApi": "https://palmleaf.org/w/api.php"
-        };
-      } else {
-        var transcriberData = {
-          "mode": "view",
-          "archiveItem": { "id": "tutur-smara-bhuwana", "leaf": 0 },
-          "iiifDimensions": { "width": 5616, "height": 3744 },
-          "iiifBaseUrl": "https://iiif.archivelab.org/iiif",
-          "imageData": [{"url":"https://palmleaf.org/w/images/b/bd/tutur-smara-bhuwana_0.jpeg","w":"5616","h":"3744"}, {"url":"https://palmleaf.org/w/images/0/0c/tutur-smara-bhuwana_1.jpeg","w":"5616","h":"3744"}, {"url":"https://palmleaf.org/w/images/a/a7/tutur-smara-bhuwana_2.jpeg","w":"5616","h":"3744"}],
-          "mediawikiApi": "https://palmleaf.org/w/api.php"
-        };
-      }
-    </script>
     <title>React App</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <textarea tabindex="1" accesskey="," id="wpTextbox1" cols="80" rows="25" style="" class="mw-editfont-monospace"
       lang="en" dir="ltr" name="wpTextbox1">
-      ==== Page 2 ====
-{{EntryImage
-|EntryID=tutur-smara-bhuwana
-|Title=2
-|FullSize=5616x3744
-|ImageBrowse=https://archive.org/stream/tutur-smara-bhuwana/tutur-smara-bhuwana-300ppi#page/n2/mode/1up
-|LocalFileName=tutur-smara-bhuwana_2.jpeg
-}}
-
-&lt;transcription&gt;
-᭚᭜᭚ᬒᬁᬅᬯᬶᬖ᭄ᬦᬵᬫᬲ᭄ᬢᬸᬬᬦᬲᬶᬥᭂᬫ᭄᭚᭜᭚ᬓᬗᬶᬦ᭄ᬪᬝᬭᬇᬰ᭄ᬯᬗ᭟ᬓᬚᬓᬗᬶᬦ᭄ᬪᬝᬭᬲᬫ᭄ᬩᬸ᭞ᬓᬚᬓᬯᬸᬄᬪᬝᬭᬯᬶᬱ᭄ᬡᬸ᭟ᬓᬚᬓᬯᬸᬄᬪᬝᬭᬰᬗ᭄ᬓᬭᬵ᭟ᬓᬯᬸᬄᬪᬝᬭᬫᬳᬵᬤᬾᬯ᭄ᬯ᭟ᬓ᭄ᬮᭀᬤ᭄ᬓᬯᬸᬄᬪᬝᬭᬮᬸᬤ᭄ᬭ᭟ᬓ᭄ᬮᭀᬤ᭄ᬪᬝᬭᬩ᭄ᬭᬳ᭄ᬫᬵ᭟ᬓ᭄ᬮᭀᬤ᭄ᬓᬗᬶᬦ᭄‌ᬪᬝᬭᬫᬳᬵᬲᭀᬭ᭟ᬓᬗᬶᬦ᭄ᬧᬸᬢᬶᬄ᭟ᬓᬯᬸᬄᬳᬶᬚᭀ᭟ᬓ᭄ᬮᭀᬤ᭄ᬩᬭᬓ᭄᭟ᬓᬚᬲᬼᬫ᭄᭚᭜᭚ᬪᬝᬭᬰ᭄ᬯᬄᬓᬢᬶᬩᬭᬶᬂᬪᬝᬭᬰᬶᬯᬵ᭞ᬳᬗ᭄ᬮᬬᬂᬭᬶᬂᬲᬹᬃᬬ᭄ᬬᬮᬬᬵ᭞ᬫ᭄ᬦᬾᬓᬕᬸᬦᬸᬂᬲᬭᬶ᭞ᬫ᭄ᬦᬾᬓᬢᬶᬩᬭᬶᬂᬰ᭄ᬯᬃᬕ᭄ᬕᬮᭀᬓᬵ᭞ᬫ᭄ᬦᬾᬓᬢᬶᬩᬭᬶᬂᬩᬶᬦ᭄ᬢᬂᬢ᭄ᬭᬗ᭄ᬕᬡᬵ᭞ᬫ᭄ᬦᬾᬓᬢᬶᬩᬭᬶᬂᬕᬸᬦᬸᬂᬇᬦ᭄ᬤ᭄ᬭᬓᬶᬮ᭞ᬢᬸᬳᬸᬚᬫᬚᬸᬚ᭞ᬫᬩ᭄ᬘᬵᬯᬢ᭄ᬳᬢ᭄ᬫᬦᬾ᭞ᬚᬫᬚᬸᬚᬵ᭞ᬓᬢᬶᬩᬭᬶᬂᬪᬝᬭᬰᬓ᭄ᬢᬶ᭞ᬓᬢᬶᬩᬭᬶᬂᬪᬝᬭᬕᬸᬭᬸ᭞ᬰ᭄ᬯᬕᬡ᭄ᬥᬕᬸᬦᬸᬂᬭᬸᬩᬸᬄ᭞᭒ᬳ᭟ᬲᬭᬶᬲᬃᬯ᭄ᬯᬲᬭᬶᬓᬢᬶᬩᬭᬶᬂᬳᬶᬲᬰᬫᬸᬲᬰᬓᬮᬫᬸᬮᬄ᭞ᬩᬪᬢᬝᬵᬭᬇᬰ᭄ᬯᬭᬵᬫᬸᬗ᭄ᬕᬸᬄᬭᬶᬂᬧᬸᬧᬸᬲᬸᬄ᭞ᬓᬗᬶᬦ᭄ᬮᬸᬗ᭄ᬕᬸᬄᬳᬶᬤᬵ᭞ᬓ᭄ᬮᭀᬤ᭄ᬪᬝᬵᬭᬩ᭄ᬭᬳᬵᬳ᭄ᬫᬫᬸᬗ᭄ᬕᬸᬄᬭᬶᬗ᭄ᬳᬢᬶ᭞ᬓᬯᬸᬄᬪᬝᬵᬭᬫᬳᬵᬤᬾᬯ᭄ᬯᬵ᭞ᬫᬸᬗ᭄ᬕᬸᬄᬭᬶᬂᬉᬗ᭄ᬲᬶᬮᬦ᭄᭞ᬚ᭄ᬭᭀᬦᬶᬂᬧᬸᬧᬸᬲᬸᬄᬲᬸᬯᬸᬂ᭞ᬚ᭄ᬭᭀᬦᬶᬂᬲᬸᬯᬸᬂ᭞ᬳᬦ᭄ᬢᬭ᭞ᬚ᭄ᬭᭀᬦᬶᬂᬳᬦ᭄ᬢᬭ᭞ᬳᬦᬓ᭄ᬳᬦᬓ᭄ᬕᬟᬶᬂ᭞ᬚ᭄ᬭᭀᬦᬶᬂᬳᬦᬓ᭄ᬳᬦᬓ᭄ᬕᬥᬶᬂ᭞
-&lt;/transcription&gt;
-
+ᬯᬬᬦ᭄᭞ &lt;br&gt;
+ᬳᬃᬓᬘᬯᬬᬦ᭄᭞ &lt;br&gt;
+ᬳᬃᬓ &lt;br&gt;
     </textarea>
 
     <p>blep</p>
@@ -116,5 +72,30 @@
     <p>blep</p>
     <p>blep</p>
     <p>blep</p>
+    <script>
+      if (1) {
+        window.transcriberData = {
+          "mode": "edit",
+          "archiveItem": { "id": "adi-purana", "file": "adi-purana-300ppi", "leaf": 0 },
+          "iiifDimensions": [5616, 3744],
+          "iiifBaseUrl": "https://iiif.archivelab.org/iiif",
+          "imageUrl": "http://localhost:8000/images/thumb/6/62/Bali-lontar-adi-purana-300ppi.pdf/page1-1024px-Bali-lontar-adi-purana-300ppi.pdf.jpg",
+          "script": "bali",
+          "language": "ban",
+          "variant": "ban",
+          "mediawikiApi": "http://localhost:8000/api.php",
+          "textbox": document.getElementById("wpTextbox1")
+        };
+      } else {
+        window.transcriberData = {
+          "mode": "view",
+          "archiveItem": { "id": "tutur-smara-bhuwana", "leaf": 0 },
+          "iiifDimensions": { "width": 5616, "height": 3744 },
+          "iiifBaseUrl": "https://iiif.archivelab.org/iiif",
+          "imageData": [{"url":"https://palmleaf.org/w/images/b/bd/tutur-smara-bhuwana_0.jpeg","w":"5616","h":"3744"}, {"url":"https://palmleaf.org/w/images/0/0c/tutur-smara-bhuwana_1.jpeg","w":"5616","h":"3744"}, {"url":"https://palmleaf.org/w/images/a/a7/tutur-smara-bhuwana_2.jpeg","w":"5616","h":"3744"}],
+          "mediawikiApi": "https://palmleaf.org/w/api.php"
+        };
+      }
+    </script>
   </body>
 </html>

@@ -8,7 +8,7 @@ const transcriber = document.createElement("div");
 document.body.appendChild(transcriber);
 ReactDOM.render(<App {...window.transcriberData} />, transcriber);
 
-if (!window.mw.user.options.get("proofreadpage-horizontal-layout")) {
+if (window.mw && !window.mw.user.options.get("proofreadpage-horizontal-layout")) {
   const switchLayout = document.querySelector(".oo-ui-icon-switchLayout");
   if (switchLayout) {
     switchLayout.click();

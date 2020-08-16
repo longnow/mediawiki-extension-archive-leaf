@@ -234,7 +234,7 @@ export default class App extends Component {
     if (newValue.length) {
       newValue += '\n';
     }
-    newValue = newValue.replace(/ *\n/g, ' <br>\n');
+    newValue = newValue.replace(/ *\n/g, '<br>\n');
     if (newValue !== this.props.textbox.value) {
       this.props.textbox.value = newValue;
     }
