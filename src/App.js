@@ -193,7 +193,7 @@ export default class App extends Component {
     }
 
     if (this.editMode) {
-      const text = this.props.textbox.value.replace(/ *<br(?: *\/ *)?> *\n*/g, '\n').trim();
+      const text = this.props.textbox.value.replace(/ *<br(?: *\/ *)?> *\n?/g, '\n').trim();
       setTimeout(() => this.checkStoredText(text), 1000);
       newState.text = text;
       newState.caretPos = text.length;
@@ -234,7 +234,9 @@ export default class App extends Component {
     if (newValue.length) {
       newValue += '\n';
     }
-    newValue = newValue.replace(/ *\n/g, '<br>\n');
+    newValue = newValue
+      .replace(/ +(?=\n)/g, '')
+      .replace(/(?<!\n)\n(?!\n)/g, '<br>\n');
     if (newValue !== this.props.textbox.value) {
       this.props.textbox.value = newValue;
     }
