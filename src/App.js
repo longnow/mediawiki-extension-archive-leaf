@@ -247,6 +247,10 @@ export default class App extends Component {
     newValue = newValue
       .replace(/ +(?=\n)/g, "")
       .replace(/(^|[^\n])\n(?!\n)/g, "$1<br>\n");
+    // add trailing newline
+    if (newValue.length) {
+      newValue += "\n";
+    }
     if (newValue !== this.props.textbox.value) {
       this.props.textbox.value = newValue;
     }
