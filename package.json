@@ -1,22 +1,22 @@
 {
   "name": "palmleaf-transcriber",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^5.14.0",
-    "@fortawesome/react-fontawesome": "^0.1.11",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.12",
     "clsx": "^1.1.1",
     "node-sass": "^4.14.1",
-    "react": "^16.13.1",
-    "react-app-polyfill": "^1.0.6",
-    "react-dom": "^16.13.1",
+    "react": "^17.0.1",
+    "react-app-polyfill": "^2.0.0",
+    "react-dom": "^17.0.1",
     "react-responsive-pinch-zoom-pan": "git+https://github.com/kamholz/react-responsive-pinch-zoom-pan.git",
-    "reactjs-popup": "^1.4.1"
+    "reactjs-popup": "1.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.5.1",
-    "eslint-plugin-react": "^7.20.5",
-    "react-scripts": "^3.4.1"
+    "eslint": "^7.12.1",
+    "eslint-plugin-react": "^7.21.5",
+    "react-scripts": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

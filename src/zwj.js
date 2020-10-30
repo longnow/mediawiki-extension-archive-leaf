@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 
 function SvgComponent(props) {
   return (
@@ -12,5 +13,9 @@ function SvgComponent(props) {
     </svg>
   );
 }
+
+SvgComponent.propTypes = {
+  title: PropTypes.string,
+};
 
 export default SvgComponent;

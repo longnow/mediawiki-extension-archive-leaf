@@ -1,4 +1,5 @@
 import React, { Component, useState } from "react";
+import PropTypes from "prop-types";
 import cx from "clsx";
 
 //import NonPrintingKeys from "./NonPrintingKeys.js";
@@ -45,6 +46,16 @@ const Key = props => {
       {props.svg ? props.svg({ title: props.text }) : props.text}
     </div>
   );
+};
+
+Key.propTypes = {
+  className: PropTypes.string,
+  flash: PropTypes.bool,
+  gridArea: PropTypes.string,
+  onClick: PropTypes.func,
+  svg: PropTypes.func,
+  text: PropTypes.string.isRequired,
+  unzoomable: PropTypes.bool,
 };
 
 const gridToStyle = grid => ({
@@ -257,3 +268,15 @@ export default class Keyboard extends Component {
   }
 
 }
+
+Keyboard.propTypes = {
+  caretPos: PropTypes.number,
+  className: PropTypes.string,
+  emulateTextEdit: PropTypes.bool,
+  layout: PropTypes.object.isRequired,
+  onKeyPress: PropTypes.func,
+  onTextChange: PropTypes.func,
+  script: PropTypes.string.isRequired,
+  shiftLevel: PropTypes.number,
+  text: PropTypes.string,
+};

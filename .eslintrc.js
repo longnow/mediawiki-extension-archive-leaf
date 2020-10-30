@@ -17,7 +17,7 @@ module.exports = {
   },
   "plugins": ["react"],
   "rules": {
-    "indent": ["error", 2],
+    //"indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
     "prefer-const": ["error"],
     "quotes": ["error", "double"],

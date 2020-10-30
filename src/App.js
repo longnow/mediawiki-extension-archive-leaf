@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import PinchZoomPan from "react-responsive-pinch-zoom-pan";
 import cx from "clsx";
 import Popup from "reactjs-popup";
@@ -86,6 +87,14 @@ const MenuItem = props => {
       onClick={e => { close(); onClick && onClick(e); }}
     >{spanClassName && <span className={spanClassName}></span>}{label}</div>
   );
+};
+
+MenuItem.propTypes = {
+  className: PropTypes.string,
+  close: PropTypes.func,
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  spanClassName: PropTypes.string,
 };
 
 export default class App extends Component {
@@ -194,7 +203,7 @@ export default class App extends Component {
 
     if (this.editMode) {
       const text = this.props.textbox.value
-        .replace(/ *<br(?: *\/)?> *\n?/g, '\n')
+        .replace(/ *<br(?: *\/)?> *\n?/g, "\n")
         .trim();
       newState.text = text;
       newState.caretPos = text.length;
@@ -236,8 +245,8 @@ export default class App extends Component {
     // remove space before newline
     // insert <br> before single newlines
     newValue = newValue
-      .replace(/ +(?=\n)/g, '')
-      .replace(/(^|[^\n])\n(?!\n)/g, '$1<br>\n');
+      .replace(/ +(?=\n)/g, "")
+      .replace(/(^|[^\n])\n(?!\n)/g, "$1<br>\n");
     if (newValue !== this.props.textbox.value) {
       this.props.textbox.value = newValue;
     }
@@ -279,7 +288,9 @@ export default class App extends Component {
 
   handleKeyPress = preText => {
     const ta = this.textAreaRef.current;
-    this.setState({ text: preText + ta.value.slice(ta.selectionEnd), caretPos: preText.length });
+    if (ta) {
+      this.setState({ text: preText + ta.value.slice(ta.selectionEnd), caretPos: preText.length });
+    }
   }
 
   handleCaretMove = e => {
@@ -306,19 +317,21 @@ export default class App extends Component {
       caret.offsetParent.scrollTop = caret.offsetTop;
     } else {
       const ta = this.textAreaRef.current;
-      const { caretPos } = this.state;
-      if (ta.selectionStart !== caretPos) {
-        ta.setSelectionRange(caretPos, caretPos);
-      }
-      if (!platform.mobile && document.activeElement !== ta) {
-        ta.focus();
+      if (ta) {
+        const { caretPos } = this.state;
+        if (ta.selectionStart !== caretPos) {
+          ta.setSelectionRange(caretPos, caretPos);
+        }
+        if (!platform.mobile && document.activeElement !== ta) {
+          ta.focus();
+        }
       }
     }
   }
 
   focusTextArea() {
     const ta = this.textAreaRef.current;
-    if (!platform.mobile && document.activeElement !== ta) {
+    if (ta && !platform.mobile && document.activeElement !== ta) {
       ta.focus();
     }
   }
@@ -371,7 +384,7 @@ export default class App extends Component {
         format: "json",
         formatversion: 2
       }).toString();
-      window.fetch(this.getMediawikiApi() + '?' + params)
+      window.fetch(this.getMediawikiApi() + "?" + params)
       .then(res => {
         res.json().then(json => {
           if (!json.error) {
@@ -416,7 +429,7 @@ export default class App extends Component {
         format: "json",
         formatversion: 2
       }).toString();
-      const res = await window.fetch(this.getMediawikiApi() + '?' + params);
+      const res = await window.fetch(this.getMediawikiApi() + "?" + params);
       const resJson = await res.json();
       this.leafContents[leaf] = resJson.parse
         ? JSON.parse(resJson.parse.wikitext).body
@@ -595,3 +608,17 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  archiveItem: PropTypes.object.isRequired,
+  commonsFile: PropTypes.string,
+  iiifBaseUrl: PropTypes.string,
+  iiifDimensions: PropTypes.array,
+  iiifImageData: PropTypes.object,
+  imageUrl: PropTypes.string.isRequired,
+  mediawikiApi: PropTypes.string,
+  mode: PropTypes.string,
+  script: PropTypes.string.isRequired,
+  textbox: PropTypes.instanceOf(Element),
+  wikipages: PropTypes.array,
+};
