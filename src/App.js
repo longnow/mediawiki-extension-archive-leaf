@@ -193,10 +193,12 @@ export default class App extends Component {
     }
 
     if (this.editMode) {
-      const text = this.props.textbox.value.replace(/ *<br(?: *\/ *)?> *\n?/g, '\n').trim();
-      setTimeout(() => this.checkStoredText(text), 1000);
+      const text = this.props.textbox.value
+        .replace(/ *<br(?: *\/)?> *\n?/g, '\n')
+        .trim();
       newState.text = text;
       newState.caretPos = text.length;
+      setTimeout(() => this.checkStoredText(text), 1000);
     }
 
     return newState;
@@ -231,9 +233,8 @@ export default class App extends Component {
 
   saveTranscription() {
     let newValue = this.state.text.trim();
-    if (newValue.length) {
-      newValue += '\n';
-    }
+    // remove space before newline
+    // insert <br> before single newlines
     newValue = newValue
       .replace(/ +(?=\n)/g, '')
       .replace(/(^|[^\n])\n(?!\n)/g, '$1<br>\n');
