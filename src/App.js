@@ -379,16 +379,22 @@ export default class App extends Component {
 
   getTransliteration() {
     return new Promise((resolve, reject) => {
-      const params = new URLSearchParams({
-        action: "parse",
-        prop: "text",
-        text: `{{#transliterate:${this.state.language}|${this.state.text}}}`,
-        contentmodel: "wikitext",
-        disablelimitreport: 1,
-        format: "json",
-        formatversion: 2
+      const originParam = new URLSearchParams({
+        origin: window.location.origin
       }).toString();
-      window.fetch(this.getMediawikiApi() + "?" + params)
+      window.fetch(this.getTransliterateApi() + "?" + originParam, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "parse",
+          prop: "text",
+          text: `{{#transliterate:${this.props.language}|${this.props.variant}|${this.state.text}}}`,
+          contentmodel: "wikitext",
+          disablelimitreport: 1,
+          disableeditsection: 1,
+          format: "json",
+          formatversion: 2
+        })
+      })
       .then(res => {
         res.json().then(json => {
           if (!json.error) {
@@ -412,6 +418,10 @@ export default class App extends Component {
 
   getMediawikiApi() {
     return this.props.mediawikiApi || "/w/api.php";
+  }
+
+  getTransliterateApi() {
+    return this.props.transliterateApi || this.getMediawikiApi();
   }
 
   getLeafImageUrl(leaf) {
@@ -620,9 +630,12 @@ App.propTypes = {
   iiifDimensions: PropTypes.array,
   iiifImageData: PropTypes.object,
   imageUrl: PropTypes.string.isRequired,
+  language: PropTypes.string,
   mediawikiApi: PropTypes.string,
   mode: PropTypes.string,
   script: PropTypes.string.isRequired,
   textbox: PropTypes.instanceOf(Element),
+  transliterateApi: PropTypes.string,
+  variant: PropTypes.string,
   wikipages: PropTypes.array,
 };
