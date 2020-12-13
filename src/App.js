@@ -387,7 +387,7 @@ export default class App extends Component {
         body: new URLSearchParams({
           action: "parse",
           prop: "text",
-          text: `{{#transliterate:${this.props.language}|${this.props.variant}|${this.state.text}}}`,
+          text: `<langconvert from="${this.props.language}" to="${this.props.variant}">${this.state.text}</langconvert>`,
           contentmodel: "wikitext",
           disablelimitreport: 1,
           disableeditsection: 1,
