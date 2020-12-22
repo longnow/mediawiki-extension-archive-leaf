@@ -207,11 +207,11 @@ export default class App extends Component {
       newState.iiifUrl = `${this.props.iiifBaseUrl}/${archiveItem.id}:${archiveItem.file}%24${archiveItem.leaf}`;
     }
 
+    const text = this.props.textbox.value
+      .replace(/ *<br(?: *\/)?> *\n?/g, "\n")
+      .trim();
+    newState.text = text;
     if (this.editMode) {
-      const text = this.props.textbox.value
-        .replace(/ *<br(?: *\/)?> *\n?/g, "\n")
-        .trim();
-      newState.text = text;
       newState.caretPos = text.length;
       setTimeout(() => this.checkStoredText(text), 1000);
     }
