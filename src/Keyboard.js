@@ -273,7 +273,6 @@ Keyboard.propTypes = {
   caretPos: PropTypes.number,
   className: PropTypes.string,
   emulateTextEdit: PropTypes.bool,
-  layout: PropTypes.object.isRequired,
   onKeyPress: PropTypes.func,
   onTextChange: PropTypes.func,
   script: PropTypes.string.isRequired,

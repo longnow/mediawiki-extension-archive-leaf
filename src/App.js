@@ -10,15 +10,15 @@ import styles from "./App.module.scss";
 import Keyboard from "./Keyboard";
 import layouts from "./layouts.js";
 
-const scriptFont = {
+const scriptOptions = {
   "bali": {
-    "fonts": ["Kadiri","Pustaka_Bali","Vimala"],
-    "default": "Vimala"
+    "fonts": [["Kadiri","Kadiri"],["PustakaBali","Pustaka Bali"],["Vimala","Vimala"]],
+    "defaultFont": "Vimala",
+    "variants": [["ban-x-dharma","DHARMA"],["ban-x-palmleaf","Palmleaf.org"],["ban-x-pku","Puri Kauhan Ubud"]],
+    "defaultVariant": "ban-x-pku",
+    "mediawikiVariant": "ban",
   }
 };
-for (const script in scriptFont) {
-  scriptFont[script].fonts = scriptFont[script].fonts.map(x => [x, x.replace(/_/g," ")]);
-}
 
 const platform = detectPlatform();
 const getSelection = detectGetSelection();
@@ -100,7 +100,7 @@ MenuItem.propTypes = {
 export default class App extends Component {
   constructor(props) {
     super(props);
-    const { script } = props;
+    const { script, variant } = props;
     this.editMode = props.mode === "edit";
 
     this.state = {
@@ -110,15 +110,21 @@ export default class App extends Component {
       imageLoading: false,
     };
 
-    const savedFont = window.localStorage.getItem(`font-${script}`);
-    if (scriptFont[script] && scriptFont[script].fonts.some(([name]) => name === savedFont)) {
-      this.state.font = savedFont;
-    }
+    if (scriptOptions[script]) {
+        const savedFont = window.localStorage.getItem(`font-${script}`);
+        if (savedFont && scriptOptions[script].fonts.some(([name]) => name === savedFont)) {
+            this.state.font = savedFont;
+        } else {
+            this.state.font = scriptOptions[script].defaultFont;
+        }
 
-    if (!this.state.font) {
-      this.state.font = scriptFont[script]
-        ? scriptFont[script].default
-        : "defaultFont";
+        if (variant && scriptOptions[script].variants.some(([name]) => name === variant)) {
+            this.state.variant = variant;
+        } else {
+            this.state.variant = scriptOptions[script].defaultVariant;
+        }
+    } else {
+        this.state.font = "defaultFont";
     }
 
     if (this.editMode) {
@@ -151,8 +157,8 @@ export default class App extends Component {
       this.state = { ...this.state, ...this.finalizeOpen() };
     }
 
-    /*if (scriptFont[script]) {
-      document.body.style.setProperty("font-family", `"${scriptFont[script].default}", ${window.getComputedStyle(document.body).getPropertyValue("font-family")}`);
+    /*if (scriptOptions[script]) {
+      document.body.style.setProperty("font-family", `"${scriptOptions[script].default}", ${window.getComputedStyle(document.body).getPropertyValue("font-family")}`);
     }*/
   }
 
@@ -363,8 +369,21 @@ export default class App extends Component {
     }
   }
 
-  setTransliterationOpen(transliterationOpen) {
-    if (transliterationOpen !== this.state.transliterationOpen) {
+  setVariant = variant => {
+    if (this.state.variant !== variant) {
+      this.setState({ variant }, () => {
+        if (this.state.transliterationOpen) {
+          this.setTransliterationOpen(true, true);
+        }
+      });
+      if (window.mw) {
+        window.mw.user.options.set(`variant-${scriptOptions[this.props.script].mediawikiVariant}`, variant);
+      }
+    }
+  }
+
+  setTransliterationOpen(transliterationOpen, refresh) {
+    if (refresh || transliterationOpen !== this.state.transliterationOpen) {
       if (transliterationOpen) {
         if (this.state.text.trim().length) {
           this.getTransliteration().then(transliteration => {
@@ -387,7 +406,7 @@ export default class App extends Component {
         body: new URLSearchParams({
           action: "parse",
           prop: "text",
-          text: `<langconvert from="${this.props.language}" to="${this.props.variant}">${this.state.text}</langconvert>`,
+          text: `<langconvert from="${this.props.language}" to="${this.state.variant}">${this.state.text}</langconvert>`,
           contentmodel: "wikitext",
           disablelimitreport: 1,
           disableeditsection: 1,
@@ -467,7 +486,7 @@ export default class App extends Component {
     const editMode = this.editMode;
     const { script } = this.props;
     const {
-      open, text, caretPos, emulateTextEdit, font,
+      open, text, caretPos, emulateTextEdit, font, variant,
       keyboardAvailable, keyboardOpen, transliterationOpen,
       imageUrl, iiifUrl, iiifDimensions, imageLoading,
     } = this.state;
@@ -575,20 +594,40 @@ export default class App extends Component {
             >
               {close => (
                 <>
-                  <MenuItem close={close}
-                    label="Show Transliteration"
-                    onClick={() => this.setTransliterationOpen(true)}
-                  />
                   {editMode && keyboardAvailable &&
                     <MenuItem close={close}
                       label={(keyboardOpen ? "Hide" : "Show") + " Onscreen Keyboard"}
                       onClick={this.toggleKeyboard}
                     />
                   }
-                  {scriptFont[script] && scriptFont[script].fonts &&
+                  {scriptOptions[script] && scriptOptions[script].fonts &&
                     <>
-                      <MenuItem close={close} label="Set Font:" className={styles.disabled} />
-                      {scriptFont[script].fonts.map(([name,displayName]) =>
+                      <MenuItem close={close}
+                        label="Show Transliteration"
+                        onClick={() => this.setTransliterationOpen(true)}
+                      />
+                      <MenuItem close={close} label="Transliteration:" className={styles.disabled} />
+                      {scriptOptions[script].variants.map(([name,displayName]) =>
+                        name === variant ?
+                          <MenuItem close={close}
+                            key={name}
+                            label={displayName}
+                            spanClassName={cx(styles.indented,styles.checked)}
+                          />
+                        :
+                          <MenuItem close={close}
+                            key={name}
+                            label={displayName}
+                            spanClassName={styles.indented}
+                            onClick={() => this.setVariant(name)}
+                          />
+                      )}
+                    </>
+                  }
+                  {scriptOptions[script] && scriptOptions[script].fonts &&
+                    <>
+                      <MenuItem close={close} label="Font:" className={styles.disabled} />
+                      {scriptOptions[script].fonts.map(([name,displayName]) =>
                         name === font ?
                           <MenuItem close={close}
                             key={name}

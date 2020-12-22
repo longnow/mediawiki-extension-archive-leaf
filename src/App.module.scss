@@ -105,14 +105,18 @@ body.noscroll {
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #eee;
+  }
 }
 
-.menuItem:hover {
-  background-color: #eee;
-}
+.menuItem.disabled {
+  font-style: italic;
 
-.menuItem.disabled:hover {
-  background-color: inherit;
+  &:hover {
+    background-color: inherit;
+  }
 }
 
 .menuItem .indented {
@@ -128,7 +132,7 @@ body.noscroll {
   font-family: "Kadiri", $fonts, sans-serif;
 }
 
-.Pustaka_Bali {
+.PustakaBali {
   font-family: "Pustaka Bali", $fonts, sans-serif;
 }
 
