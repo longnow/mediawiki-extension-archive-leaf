@@ -112,8 +112,8 @@ export default class App extends Component {
 
     if (scriptOptions[script]) {
         this.state.font = scriptOptions[script].defaultFont;
-        if (window.mw && window.mw.uls) {
-            const savedFont = window.mw.uls.preferences().preferences.webfonts.fonts[language];
+        if (window.mw && window.mw.webfonts) {
+            const savedFont = window.mw.webfonts.preferences.getFont(language);
             if (savedFont && scriptOptions[script].fonts.some(name => name === savedFont)) {
                 this.state.font = savedFont;
             }
@@ -370,10 +370,10 @@ export default class App extends Component {
   setFont = font => {
     if (this.state.font !== font) {
       this.setState({ font });
-      if (window.mw && window.mw.uls) {
-        const ulsPrefs = window.mw.uls.preferences();
-        ulsPrefs.preferences.webfonts.fonts[this.props.language] = font;
-        ulsPrefs.save();
+      if (window.mw && window.mw.webfonts) {
+        const prefs = window.mw.webfonts.preferences;
+        prefs.setFont(this.props.language, font);
+        prefs.save();
       }
     }
   }
