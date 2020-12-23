@@ -381,7 +381,8 @@ export default class App extends Component {
         }
       });
       if (window.mw) {
-        window.mw.user.options.set(`variant-${scriptOptions[this.props.script].mediawikiVariant}`, variant);
+        const api = new window.mw.Api();
+        api.saveOption(`variant-${scriptOptions[this.props.script].mediawikiVariant}`, variant);
       }
     }
   }
