@@ -12,11 +12,11 @@ import layouts from "./layouts.js";
 
 const scriptOptions = {
   "bali": {
-    "fonts": [["Kadiri","Kadiri"],["PustakaBali","Pustaka Bali"],["Vimala","Vimala"]],
+    "fonts": ["Kadiri", "Pustaka Bali", "Vimala"],
     "defaultFont": "Vimala",
     "variants": [["ban-x-dharma","DHARMA"],["ban-x-palmleaf","Palmleaf.org"],["ban-x-pku","Puri Kauhan Ubud"]],
     "defaultVariant": "ban-x-pku",
-    "mediawikiVariant": "ban",
+    "variantLang": "ban",
   }
 };
 
@@ -100,7 +100,7 @@ MenuItem.propTypes = {
 export default class App extends Component {
   constructor(props) {
     super(props);
-    const { script, variant } = props;
+    const { script, language, variant } = props;
     this.editMode = props.mode === "edit";
 
     this.state = {
@@ -111,11 +111,12 @@ export default class App extends Component {
     };
 
     if (scriptOptions[script]) {
-        const savedFont = window.localStorage.getItem(`font-${script}`);
-        if (savedFont && scriptOptions[script].fonts.some(([name]) => name === savedFont)) {
-            this.state.font = savedFont;
-        } else {
-            this.state.font = scriptOptions[script].defaultFont;
+        this.state.font = scriptOptions[script].defaultFont;
+        if (window.mw && window.mw.uls) {
+            const savedFont = window.mw.uls.preferences().preferences.webfonts.fonts[language];
+            if (savedFont && scriptOptions[script].fonts.some(name => name === savedFont)) {
+                this.state.font = savedFont;
+            }
         }
 
         if (variant && scriptOptions[script].variants.some(([name]) => name === variant)) {
@@ -369,7 +370,11 @@ export default class App extends Component {
   setFont = font => {
     if (this.state.font !== font) {
       this.setState({ font });
-      window.localStorage.setItem(`font-${this.props.script}`, font);
+      if (window.mw && window.mw.uls) {
+        const ulsPrefs = window.mw.uls.preferences();
+        ulsPrefs.preferences.webfonts.fonts[this.props.language] = font;
+        ulsPrefs.save();
+      }
     }
   }
 
@@ -382,7 +387,7 @@ export default class App extends Component {
       });
       if (window.mw) {
         const api = new window.mw.Api();
-        api.saveOption(`variant-${scriptOptions[this.props.script].mediawikiVariant}`, variant);
+        api.saveOption(`variant-${scriptOptions[this.props.script].variantLang}`, variant);
       }
     }
   }
@@ -496,6 +501,7 @@ export default class App extends Component {
       imageUrl, iiifUrl, iiifDimensions, imageLoading,
     } = this.state;
     const { archiveItem: { leaf } } = this.state;
+    const fontClass = font.replace(/ /, "");
 
     return (
       <div className={styles.App}>
@@ -519,14 +525,14 @@ export default class App extends Component {
           </div>
           {editMode ?
             (emulateTextEdit ?
-              <div className={cx(styles.text, styles[font])} onClick={this.handleCaretMove}>
+              <div className={cx(styles.text, styles[fontClass])} onClick={this.handleCaretMove}>
                 {text.slice(0, caretPos)}
                 <span className={styles.caret} ref={this.caretRef}></span>
                 {text.slice(caretPos)}
               </div>
             :
               <textarea
-                className={cx(styles.text, styles[font], !keyboardOpen && styles.expanded)}
+                className={cx(styles.text, styles[fontClass], !keyboardOpen && styles.expanded)}
                 value={text}
                 spellCheck="false"
                 ref={this.textAreaRef}
@@ -536,7 +542,7 @@ export default class App extends Component {
             )
           :
             <>
-              <div className={cx(styles.text, styles[font], styles.expanded)}>
+              <div className={cx(styles.text, styles[fontClass], styles.expanded)}>
                 {text}
               </div>
               {leaf > 0 &&
@@ -573,7 +579,7 @@ export default class App extends Component {
           {open && keyboardOpen &&
             <Keyboard
               script={script}
-              className={styles[font]}
+              className={styles[fontClass]}
               emulateTextEdit={emulateTextEdit}
               onTextChange={this.handleTextChange}
               onKeyPress={this.handleKeyPress}
@@ -605,7 +611,7 @@ export default class App extends Component {
                       onClick={this.toggleKeyboard}
                     />
                   }
-                  {scriptOptions[script] && scriptOptions[script].fonts &&
+                  {scriptOptions[script] && scriptOptions[script].variants &&
                     <>
                       <MenuItem close={close}
                         label="Show Transliteration"
@@ -632,17 +638,17 @@ export default class App extends Component {
                   {scriptOptions[script] && scriptOptions[script].fonts &&
                     <>
                       <MenuItem close={close} label="Font:" className={styles.disabled} />
-                      {scriptOptions[script].fonts.map(([name,displayName]) =>
+                      {scriptOptions[script].fonts.map(name =>
                         name === font ?
                           <MenuItem close={close}
                             key={name}
-                            label={displayName}
+                            label={name}
                             spanClassName={cx(styles.indented,styles.checked)}
                           />
                         :
                           <MenuItem close={close}
                             key={name}
-                            label={displayName}
+                            label={name}
                             spanClassName={styles.indented}
                             onClick={() => this.setFont(name)}
                           />
