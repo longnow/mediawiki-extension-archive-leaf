@@ -386,8 +386,8 @@ export default class App extends Component {
         }
       });
       if (window.mw) {
-        const api = new window.mw.Api();
-        api.saveOption(`variant-${scriptOptions[this.props.script].variantLang}`, variant);
+        new window.mw.Api()
+          .saveOption(`variant-${scriptOptions[this.props.script].variantLang}`, variant);
       }
     }
   }
