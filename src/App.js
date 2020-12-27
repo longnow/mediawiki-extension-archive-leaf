@@ -104,7 +104,7 @@ export default class App extends Component {
     this.editMode = props.mode === "edit";
 
     this.state = {
-      archiveItem: props.archiveItem,
+      fileInfo: props.fileInfo,
       transliteration: "",
       transliterationOpen: false,
       imageLoading: false,
@@ -145,10 +145,10 @@ export default class App extends Component {
       this.leafContents = [];
       this.state = {
         ...this.state,
-        imageUrl: this.getLeafImageUrl(this.state.archiveItem.leaf),
+        imageUrl: this.getLeafImageUrl(this.state.fileInfo.leaf),
         text: null,
         open: false,
-        iiifDimensions: this.getIiifDimensions(this.state.archiveItem.leaf),
+        iiifDimensions: this.getIiifDimensions(this.state.fileInfo.leaf),
         keyboardOpen: false,
         emulateTextEdit: false,
       };
@@ -178,7 +178,7 @@ export default class App extends Component {
   handleOpen = async () => {
     const newState = { open: true, ...this.finalizeOpen() };
     if (this.state.text === null) {
-      newState.text = await this.getLeafContents(this.state.archiveItem.leaf);
+      newState.text = await this.getLeafContents(this.state.fileInfo.leaf);
     }
     this.setState(newState);
   }
@@ -194,18 +194,18 @@ export default class App extends Component {
     return this.finalizeState();
   }
 
-  finalizeState(archiveItem) {
+  finalizeState(fileInfo) {
     const newState = {};
 
-    if (archiveItem) {
-      newState.archiveItem = archiveItem;
+    if (fileInfo) {
+      newState.fileInfo = fileInfo;
     } else {
-      archiveItem = this.state.archiveItem;
+      fileInfo = this.state.fileInfo;
     }
 
-    newState.archiveItemKey = [archiveItem.id, archiveItem.file, archiveItem.leaf].join("$");
-    if (this.props.iiifBaseUrl) {
-      newState.iiifUrl = `${this.props.iiifBaseUrl}/${archiveItem.id}:${archiveItem.file}%24${archiveItem.leaf}`;
+    newState.fileInfoKey = [fileInfo.file, fileInfo.leaf].join("$");
+    if (fileInfo.iaId && this.props.iiifBaseUrl) {
+      newState.iiifUrl = `${this.props.iiifBaseUrl}/${fileInfo.iaId}:${fileInfo.file}%24${fileInfo.leaf}`;
     }
 
     if (this.editMode) {
@@ -236,8 +236,8 @@ export default class App extends Component {
   }
 
   checkStoredText(text) {
-    if (this.state.archiveItemKey) {
-      let savedText = window.localStorage.getItem(this.state.archiveItemKey);
+    if (this.state.fileInfoKey) {
+      let savedText = window.localStorage.getItem(this.state.fileInfoKey);
       if (savedText) {
         savedText = savedText.trim();
         if (savedText !== text) {
@@ -246,7 +246,7 @@ export default class App extends Component {
             this.setState({ text: savedText, caretPos: savedText.length });
           }
         }
-        window.localStorage.removeItem(this.state.archiveItemKey);
+        window.localStorage.removeItem(this.state.fileInfoKey);
       }
     }
   }
@@ -266,8 +266,8 @@ export default class App extends Component {
       this.props.textbox.value = newValue;
     }
 
-    if (this.state.archiveItemKey) {
-      window.localStorage.removeItem(this.state.archiveItemKey);
+    if (this.state.fileInfoKey) {
+      window.localStorage.removeItem(this.state.fileInfoKey);
     }
   }
 
@@ -279,12 +279,12 @@ export default class App extends Component {
       this.focusTextArea();
     } else if (!(e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)) {
       if (e.key === "ArrowLeft") {
-        if (this.state.archiveItem.leaf > 0) {
-          this.setLeaf(this.state.archiveItem.leaf - 1);
+        if (this.state.fileInfo.leaf > 0) {
+          this.setLeaf(this.state.fileInfo.leaf - 1);
         }
       } else if (e.key === "ArrowRight") {
-        if (this.state.archiveItem.leaf < this.props.wikipages.length-1) {
-          this.setLeaf(this.state.archiveItem.leaf + 1);
+        if (this.state.fileInfo.leaf < this.props.wikipages.length-1) {
+          this.setLeaf(this.state.fileInfo.leaf + 1);
         }
       }
     }
@@ -293,8 +293,8 @@ export default class App extends Component {
   handleTextChange = (text, caretPos) => {
     if (text !== null) {
       this.setState({ text, caretPos });
-      if (this.state.archiveItemKey) {
-        window.localStorage.setItem(this.state.archiveItemKey, text);
+      if (this.state.fileInfoKey) {
+        window.localStorage.setItem(this.state.fileInfoKey, text);
       }
     } else if (this.state.caretPos !== caretPos) {
       this.setState({ caretPos });
@@ -442,7 +442,9 @@ export default class App extends Component {
 
   getIiifDimensions(leaf) {
     const imageData = this.props.iiifImageData;
-    return imageData.all || imageData.pages[leaf];
+    return imageData
+      ? imageData.all || imageData.pages[leaf]
+      : null;
   }
 
   getMediawikiApi() {
@@ -488,7 +490,7 @@ export default class App extends Component {
       imageLoading: true,
       iiifDimensions: this.getIiifDimensions(leaf),
       transliterationOpen: false,
-      ...this.finalizeState({ ...this.state.archiveItem, leaf }),
+      ...this.finalizeState({ ...this.state.fileInfo, leaf }),
     });
   }
 
@@ -500,7 +502,7 @@ export default class App extends Component {
       keyboardAvailable, keyboardOpen, transliterationOpen,
       imageUrl, iiifUrl, iiifDimensions, imageLoading,
     } = this.state;
-    const { archiveItem: { leaf } } = this.state;
+    const { fileInfo: { leaf } } = this.state;
     const fontClass = font.replace(/ /, "");
 
     return (
@@ -510,7 +512,7 @@ export default class App extends Component {
             <PinchZoomPan
               imageUrl={imageUrl}
               iiifUrl={iiifUrl}
-              iiifDimensions={{width: iiifDimensions[0], height: iiifDimensions[1]}}
+              iiifDimensions={iiifDimensions && {width: iiifDimensions[0], height: iiifDimensions[1]}}
               maxScale={5}
               enhanceScale={1.5}
               doubleTapBehavior="zoom"
@@ -674,7 +676,7 @@ export default class App extends Component {
 }
 
 App.propTypes = {
-  archiveItem: PropTypes.object.isRequired,
+  fileInfo: PropTypes.object.isRequired,
   commonsFile: PropTypes.string,
   iiifBaseUrl: PropTypes.string,
   iiifDimensions: PropTypes.array,
