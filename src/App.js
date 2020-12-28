@@ -100,11 +100,11 @@ MenuItem.propTypes = {
 export default class App extends Component {
   constructor(props) {
     super(props);
-    const { script, language, variant } = props;
+    const { script, language, variant, leaf } = props;
     this.editMode = props.mode === "edit";
 
     this.state = {
-      fileInfo: props.fileInfo,
+      leaf,
       transliteration: "",
       transliterationOpen: false,
       imageLoading: false,
@@ -145,10 +145,10 @@ export default class App extends Component {
       this.leafContents = [];
       this.state = {
         ...this.state,
-        imageUrl: this.getLeafImageUrl(this.state.fileInfo.leaf),
+        imageUrl: this.getLeafImageUrl(leaf),
         text: null,
         open: false,
-        iiifDimensions: this.getIiifDimensions(this.state.fileInfo.leaf),
+        iiifDimensions: this.getIiifDimensions(leaf),
         keyboardOpen: false,
         emulateTextEdit: false,
       };
@@ -178,7 +178,7 @@ export default class App extends Component {
   handleOpen = async () => {
     const newState = { open: true, ...this.finalizeOpen() };
     if (this.state.text === null) {
-      newState.text = await this.getLeafContents(this.state.fileInfo.leaf);
+      newState.text = await this.getLeafContents(this.state.leaf);
     }
     this.setState(newState);
   }
@@ -194,22 +194,23 @@ export default class App extends Component {
     return this.finalizeState();
   }
 
-  finalizeState(fileInfo) {
+  finalizeState(leaf) {
+    const { commonsFile, iaFile, iaId, iiifBaseUrl, textbox } = this.props;
     const newState = {};
 
-    if (fileInfo) {
-      newState.fileInfo = fileInfo;
+    if (leaf) {
+      newState.leaf = leaf;
     } else {
-      fileInfo = this.state.fileInfo;
+      leaf = this.props.leaf;
     }
 
-    newState.fileInfoKey = [fileInfo.file, fileInfo.leaf].join("$");
-    if (fileInfo.iaId && this.props.iiifBaseUrl) {
-      newState.iiifUrl = `${this.props.iiifBaseUrl}/${fileInfo.iaId}:${fileInfo.file}%24${fileInfo.leaf}`;
+    newState.leafKey = [commonsFile, leaf].join("$");
+    if (iaId && iaFile && iiifBaseUrl) {
+      newState.iiifUrl = `${iiifBaseUrl}/${iaId}:${iaFile}%24${leaf}`;
     }
 
     if (this.editMode) {
-      const text = this.cleanWikitext(this.props.textbox.value);
+      const text = this.cleanWikitext(textbox.value);
       newState.text = text;
       newState.caretPos = text.length;
       setTimeout(() => this.checkStoredText(text), 1000);
@@ -236,8 +237,8 @@ export default class App extends Component {
   }
 
   checkStoredText(text) {
-    if (this.state.fileInfoKey) {
-      let savedText = window.localStorage.getItem(this.state.fileInfoKey);
+    if (this.state.leafKey) {
+      let savedText = window.localStorage.getItem(this.state.leafKey);
       if (savedText) {
         savedText = savedText.trim();
         if (savedText !== text) {
@@ -246,7 +247,7 @@ export default class App extends Component {
             this.setState({ text: savedText, caretPos: savedText.length });
           }
         }
-        window.localStorage.removeItem(this.state.fileInfoKey);
+        window.localStorage.removeItem(this.state.leafKey);
       }
     }
   }
@@ -266,8 +267,8 @@ export default class App extends Component {
       this.props.textbox.value = newValue;
     }
 
-    if (this.state.fileInfoKey) {
-      window.localStorage.removeItem(this.state.fileInfoKey);
+    if (this.state.leafKey) {
+      window.localStorage.removeItem(this.state.leafKey);
     }
   }
 
@@ -279,12 +280,12 @@ export default class App extends Component {
       this.focusTextArea();
     } else if (!(e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)) {
       if (e.key === "ArrowLeft") {
-        if (this.state.fileInfo.leaf > 0) {
-          this.setLeaf(this.state.fileInfo.leaf - 1);
+        if (this.state.leaf > 0) {
+          this.setLeaf(this.state.leaf - 1);
         }
       } else if (e.key === "ArrowRight") {
-        if (this.state.fileInfo.leaf < this.props.wikipages.length-1) {
-          this.setLeaf(this.state.fileInfo.leaf + 1);
+        if (this.state.leaf < this.props.wikipages.length-1) {
+          this.setLeaf(this.state.leaf + 1);
         }
       }
     }
@@ -293,8 +294,8 @@ export default class App extends Component {
   handleTextChange = (text, caretPos) => {
     if (text !== null) {
       this.setState({ text, caretPos });
-      if (this.state.fileInfoKey) {
-        window.localStorage.setItem(this.state.fileInfoKey, text);
+      if (this.state.leafKey) {
+        window.localStorage.setItem(this.state.leafKey, text);
       }
     } else if (this.state.caretPos !== caretPos) {
       this.setState({ caretPos });
@@ -490,7 +491,7 @@ export default class App extends Component {
       imageLoading: true,
       iiifDimensions: this.getIiifDimensions(leaf),
       transliterationOpen: false,
-      ...this.finalizeState({ ...this.state.fileInfo, leaf }),
+      ...this.finalizeState(leaf),
     });
   }
 
@@ -500,9 +501,8 @@ export default class App extends Component {
     const {
       open, text, caretPos, emulateTextEdit, font, variant,
       keyboardAvailable, keyboardOpen, transliterationOpen,
-      imageUrl, iiifUrl, iiifDimensions, imageLoading,
+      imageUrl, iiifUrl, iiifDimensions, imageLoading, leaf
     } = this.state;
-    const { fileInfo: { leaf } } = this.state;
     const fontClass = font.replace(/ /, "");
 
     return (
@@ -676,13 +676,15 @@ export default class App extends Component {
 }
 
 App.propTypes = {
-  fileInfo: PropTypes.object.isRequired,
-  commonsFile: PropTypes.string,
+  commonsFile: PropTypes.string.isRequired,
+  iaFile: PropTypes.string,
+  iaId: PropTypes.string,
   iiifBaseUrl: PropTypes.string,
   iiifDimensions: PropTypes.array,
   iiifImageData: PropTypes.object,
   imageUrl: PropTypes.string.isRequired,
   language: PropTypes.string,
+  leaf: PropTypes.number.isRequired,
   mediawikiApi: PropTypes.string,
   mode: PropTypes.string,
   script: PropTypes.string.isRequired,
