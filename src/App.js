@@ -412,7 +412,7 @@ export default class App extends Component {
       const originParam = new URLSearchParams({
         origin: window.location.origin
       }).toString();
-      window.fetch(this.getTransliterateApi() + "?" + originParam, {
+      window.fetch(this.getMediawikiApi() + "?" + originParam, {
         method: "POST",
         body: new URLSearchParams({
           action: "parse",
@@ -450,10 +450,6 @@ export default class App extends Component {
 
   getMediawikiApi() {
     return this.props.mediawikiApi || "/w/api.php";
-  }
-
-  getTransliterateApi() {
-    return this.props.transliterateApi || this.getMediawikiApi();
   }
 
   getLeafImageUrl(leaf) {
@@ -689,7 +685,6 @@ App.propTypes = {
   mode: PropTypes.string,
   script: PropTypes.string.isRequired,
   textbox: PropTypes.instanceOf(Element),
-  transliterateApi: PropTypes.string,
   variant: PropTypes.string,
   wikipages: PropTypes.array,
 };
